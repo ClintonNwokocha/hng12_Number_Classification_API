@@ -4,7 +4,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest
 import requests
 import math
-import pytz
 
 # Check if number is prime
 def is_prime(n):
@@ -37,7 +36,6 @@ def get_fun_fact(n):
         return response.json().get('text', 'No fun fact available')
     return 'No fun fact available'
 
-# view to classify the number
 @csrf_exempt
 def classify_number(request):
     number = request.GET.get('number')
@@ -51,20 +49,15 @@ def classify_number(request):
     
     number = int(number)
 
-    # reject negative numbers
-    if number < 0:
-        return JsonResponse({
-            "number": str(number),
-            "error": True,
-            "message": "Negative numbers are not allowed"
-            }, status=400)
-
     # Check properties of the number
     properties = []
 
     if is_armstrong(number):
         properties.append("armstrong")
- 
+
+    if is_prime(number):
+        properties.append("prime")
+    
     if number % 2 == 0:
         properties.append("even")
     else:
