@@ -4,7 +4,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest
 import requests
 import math
-import pytz
 
 # Check if number is prime
 def is_prime(n):
