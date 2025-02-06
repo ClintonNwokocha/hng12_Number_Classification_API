@@ -41,8 +41,16 @@ def get_fun_fact(n):
 def classify_number(request):
     number = request.GET.get('number')
 
-    # check if the number is an integer
-    if not number or not number.isdigit():
+    # if no number is provided, return number: null
+    if not number:
+        return JsonResponse({
+            "number": None,
+            "error": True,
+            "message": "Missing number parameter"
+            }, status=400)
+
+    # check if the number is a valid integer
+    if not number.isdigit() and (not number.startswith('_') or not number[1:].isdigit()):
         return JsonResponse({
             "number": number,
             "error": True
