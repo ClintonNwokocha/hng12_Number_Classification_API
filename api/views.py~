@@ -49,7 +49,7 @@ def check_number_properties(n):
 @api_view(['GET'])
 def classify_number(request):
     # Validate that 'number' exists in query params
-    number_param = request.query_params.get('number', None)
+    number_params = request.query_params.get('number', None)
 
     # if no number is provided, return and error repsonse
     if not number_param:
