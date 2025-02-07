@@ -21,20 +21,20 @@ def is_perfect(n):
 
 # check if a number is armstrong
 def is_armstrong(n):
-    digits = str(n)
+    digits = str(abs(n))
     power = len(digits)
-    return sum(int(digit) ** power for digit in digits) == n
+    return sum(int(digit) ** power for digit in digits) == abs(n)
 
 # calculate the sum of digits
 def digit_sum(n):
-    return sum(int(digit) for digit in str(n))
+    return sum(int(digit) for digit in str(abs(n)))
 
 # fetch the fun fact from Numbers API
 def get_fun_fact(n):
     response = requests.get(f"http://numbersapi.com/{n}?json")
     if response.status_code == 200:
-        return response.json().get('text', 'No fun fact available')
-    return 'No fun fact available'
+        return response.json().get('text', 'Fun fact not available')
+    return 'Fun fact not available'
 
 # view to classify the number
 @csrf_exempt
@@ -44,27 +44,40 @@ def classify_number(request):
     # if no number is provided, return number: null
     if not number:
         return JsonResponse({
-            "number": None,
+            "number": "",
             "error": True,
-            "message": "Missing number parameter"
+            "is_prime": False,
+            "is_perfect": False,
+            "properties": [],
+            "digit_sum": 0,
+            "fun_fact": "Fun Fact not available"
             }, status=400)
 
-    # check if the number is a valid integer
-    if not number.isdigit() and (not number.startswith('_') or not number[1:].isdigit()):
+    # check if the number is a valid integer (allow negative sign)
+    if not number.lstrip('-').isdigit():
         return JsonResponse({
             "number": number,
-            "error": True
+            "error": True,
+            "is_prime": False,
+            "is_perfect": False,
+            "properties": [],
+            "digit_sum": 0,
+            "fun_fact": "Fun fact not available"
             }, status=400)
     
     number = int(number)
 
     # reject negative numbers
     if number < 0:
+        properties = ["armstrong", "odd"] if is_armstrong(number) else ["odd"]
         return JsonResponse({
-            "number": str(number),
-            "error": True,
-            "message": "Negative numbers are not allowed"
-            }, status=400)
+            "number": number,
+            "is_prime": is_prime(number),
+            "is_perfect": is_perfect(number),
+            "properties": properties,
+            "digit_sum": digit_sum(number),
+            "fun_fact": get_fun_fact(number)
+            })
 
     # Check properties of the number
     properties = []
