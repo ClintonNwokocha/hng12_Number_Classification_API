@@ -63,11 +63,6 @@ def classify_number(request):
         return JsonResponse({
             "number": number,
             "error": True,
-            "is_prime": False,
-            "is_perfect": False,
-            "properties": [],
-            "digit_sum": 0,
-            "fun_fact": "Fun fact not available"
             }, status=400)
     
     number = int(number)
