@@ -16,8 +16,8 @@ def is_prime(n):
 
 # check if number is perfect
 def is_perfect(n):
-    divisor_sum = sum(i for i in range(1, n) if n% i == 0)
-    return divisor_sum == n
+    divisor_sum = sum(i for i in range(1, abs(n)) if n% i == 0)
+    return divisor_sum == abs(n)
 
 # check if a number is armstrong
 def is_armstrong(n):
@@ -31,9 +31,14 @@ def digit_sum(n):
 
 # fetch the fun fact from Numbers API
 def get_fun_fact(n):
-    response = requests.get(f"http://numbersapi.com/{n}?json")
-    if response.status_code == 200:
-        return response.json().get('text', 'Fun fact not available')
+    try:
+        response = requests.get(f"http://numbersapi.com/{n}?json")
+        if response.status_code == 200:
+            return response.json().get('text', 'Fun fact not available')
+    except requests.exceptions.Timeout:
+        return "Fun fact not available due to timeout"
+    except requests.exceptions.RequestException as e:
+        return "Fun fact not available due to an error"
     return 'Fun fact not available'
 
 # view to classify the number
