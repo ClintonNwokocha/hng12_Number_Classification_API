@@ -49,7 +49,7 @@ def classify_number(request):
     # if no number is provided, return number: null
     if not number:
         return JsonResponse({
-            "number": "",
+            "number": None,
             "error": True,
             "is_prime": False,
             "is_perfect": False,
@@ -59,7 +59,7 @@ def classify_number(request):
             }, status=400)
 
     # check if the number is a valid integer (allow negative sign)
-    if not number.lstrip('-').isdigit():
+    if not number.isdigit() and not (number.startswith('_') and number[1:].isdigit()):
         return JsonResponse({
             "number": number,
             "error": True,
@@ -72,17 +72,6 @@ def classify_number(request):
     
     number = int(number)
 
-    # reject negative numbers
-    if number < 0:
-        properties = ["armstrong", "odd"] if is_armstrong(number) else ["odd"]
-        return JsonResponse({
-            "number": number,
-            "is_prime": is_prime(number),
-            "is_perfect": is_perfect(number),
-            "properties": properties,
-            "digit_sum": digit_sum(number),
-            "fun_fact": get_fun_fact(number)
-            })
 
     # Check properties of the number
     properties = []
